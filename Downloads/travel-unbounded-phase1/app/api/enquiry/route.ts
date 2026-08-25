@@ -11,7 +11,7 @@ function isFutureDate(date: string) {
   today.setHours(0, 0, 0, 0);
   return !Number.isNaN(selected.getTime()) && selected > today;
 }
-
+export const dynamic = 'force-dynamic';
 export async function POST(request: Request) {
   try {
     const body = await request.json();
