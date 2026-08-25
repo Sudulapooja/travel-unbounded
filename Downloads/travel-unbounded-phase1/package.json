@@ -1,0 +1,24 @@
+{
+  "name": "travel-unbounded",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "mongodb": "^6.18.0",
+    "next": "^16.3.2",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "react-phone-number-input": "^3.4.12"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.0",
+    "@types/react": "^19.1.10",
+    "@types/react-dom": "^19.1.7",
+    "typescript": "^5.9.2"
+  }
+}
