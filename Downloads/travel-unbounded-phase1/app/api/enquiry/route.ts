@@ -53,12 +53,14 @@ export async function POST(request: Request) {
     });
 
     return NextResponse.json({ success: true, id: result.insertedId.toString() }, { status: 201 });
-  } catch (error) {
-    console.error("Enquiry API error:", error);
-    return NextResponse.json({ error: "Unable to save enquiry. Please try again." }, { status: 500 });
-  }
+  }  catch (error: any) {
+  console.error("Database connection error:", error);
+  return NextResponse.json(
+    { error: error.message || "Failed to submit enquiry" },
+    { status: 500 }
+  );
 }
-
+}
 export async function GET() {
   try {
     const client = await clientPromise;
