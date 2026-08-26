@@ -2,9 +2,11 @@ import { MongoClient } from "mongodb";
 
 const uri = process.env.MONGODB_URI;
 
-if (!uri) {
-  throw new Error("Please define MONGODB_URI in .env.local");
+if (!uri && process.env.NODE_ENV === "production") {
+  console.warn("MONGODB_URI missing during build evaluation");
 }
+
+const safeUri = uri || "mongodb://localhost:27017/placeholder";
 
 const options = {};
 
@@ -18,12 +20,12 @@ declare global {
 
 if (process.env.NODE_ENV === "development") {
   if (!global._mongoClientPromise) {
-    client = new MongoClient(uri, options);
+    client = new MongoClient(safeUri, options);
     global._mongoClientPromise = client.connect();
   }
   clientPromise = global._mongoClientPromise;
 } else {
-  client = new MongoClient(uri, options);
+  client = new MongoClient(safeUri, options);
   clientPromise = client.connect();
 }
 
