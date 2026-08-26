@@ -1,31 +1,26 @@
 import { MongoClient } from "mongodb";
 
 const uri = process.env.MONGODB_URI;
-
-if (!uri && process.env.NODE_ENV === "production") {
-  console.warn("MONGODB_URI missing during build evaluation");
-}
-
-const safeUri = uri || "mongodb://localhost:27017/placeholder";
-
 const options = {};
 
 let client: MongoClient;
 let clientPromise: Promise<MongoClient>;
 
-declare global {
-  // eslint-disable-next-line no-var
-  var _mongoClientPromise: Promise<MongoClient> | undefined;
-}
+if (!uri) {
+  // Dummy promise during build phase so static generation succeeds
+  clientPromise = Promise.resolve({} as MongoClient);
+} else if (process.env.NODE_ENV === "development") {
+  let globalWithMongo = global as typeof globalThis & {
+    _mongoClientPromise?: Promise<MongoClient>;
+  };
 
-if (process.env.NODE_ENV === "development") {
-  if (!global._mongoClientPromise) {
-    client = new MongoClient(safeUri, options);
-    global._mongoClientPromise = client.connect();
+  if (!globalWithMongo._mongoClientPromise) {
+    client = new MongoClient(uri, options);
+    globalWithMongo._mongoClientPromise = client.connect();
   }
-  clientPromise = global._mongoClientPromise;
+  clientPromise = globalWithMongo._mongoClientPromise;
 } else {
-  client = new MongoClient(safeUri, options);
+  client = new MongoClient(uri, options);
   clientPromise = client.connect();
 }
 
